@@ -8,4 +8,5 @@
     <string name="title_activity_item">ItemActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_drug">DrugActivity</string>
 </resources>

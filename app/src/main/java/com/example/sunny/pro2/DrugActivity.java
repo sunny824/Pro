@@ -1,5 +1,9 @@
 package com.example.sunny.pro2;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,39 +16,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
+import android.widget.Toast;
 
-public class TestActivity extends AppCompatActivity
+import java.util.Calendar;
+
+public class DrugActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    int icons[]={
-        R.mipmap.ico1c,
-        R.mipmap.ico2c,
-        R.mipmap.ico3c,
-        R.mipmap.ico4c,
-        R.mipmap.ico7c,
-        R.mipmap.ico5c,
-
-
-
-
-
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
+        setContentView(R.layout.activity_drug);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        GridView grid = (GridView) findViewById(R.id.g1);
-        IconAdapter iconAdapter = new IconAdapter();
-        grid.setAdapter(iconAdapter);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +47,21 @@ public class TestActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        Calendar cal = Calendar.getInstance();
+        // 設定於 3 分鐘後執行
+        cal.add(Calendar.MINUTE, 1);
+
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("msg", "內容內容123");
+
+        PendingIntent pi = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
+
+        Toast.makeText(this, "推播測試..."  , Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -78,7 +77,7 @@ public class TestActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.test, menu);
+        getMenuInflater().inflate(R.menu.drug, menu);
         return true;
     }
 
@@ -103,16 +102,13 @@ public class TestActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_bmi) {
-            android.content.Intent intent = new android.content.Intent(this, BmiActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_item) {
-            android.content.Intent intent = new android.content.Intent(this, TestActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_add) {
-            android.content.Intent intent = new android.content.Intent(this, AddActivity.class);
-            startActivity(intent);
-        }else if (id == R.id.nav_manage) {
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
 
@@ -123,32 +119,5 @@ public class TestActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    class IconAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return icons.length;
-        }
-
-        @Override
-        public Object getItem(int position) {
-
-            return "test";
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return icons[position];
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.icon, null);
-            ImageView iv = (ImageView) convertView.findViewById(R.id.icon_image);
-            iv.setImageResource(icons[position]);
-            return convertView;
-        }
     }
 }
