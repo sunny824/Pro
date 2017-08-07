@@ -50,13 +50,13 @@ public class DrugActivity extends AppCompatActivity
 
 
         Calendar cal = Calendar.getInstance();
-        // 設定於 3 分鐘後執行
+        // 設定於 1 分鐘後執行
         cal.add(Calendar.MINUTE, 1);
 
         Intent intent = new Intent(this, AlarmReceiver.class);
         intent.putExtra("msg", "內容內容123");
 
-        PendingIntent pi = PendingIntent.getBroadcast(this, 1, intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
