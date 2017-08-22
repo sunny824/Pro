@@ -45,6 +45,8 @@
             android:label="@string/title_activity_drug"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".Test2Activity">
+        </activity>
     </application>
 
 </manifest>
