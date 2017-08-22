@@ -62,6 +62,7 @@ public class DrugActivity extends AppCompatActivity
         am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
 
         Toast.makeText(this, "推播測試..."  , Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
