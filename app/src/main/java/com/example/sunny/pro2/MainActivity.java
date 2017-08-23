@@ -155,8 +155,13 @@ public class MainActivity extends AppCompatActivity
         }else if (id == R.id.nav_list) {
             android.content.Intent intent = new android.content.Intent(this, ListActivity.class);
             startActivity(intent);
+
         } else if (id == R.id.nav_drug) {
             android.content.Intent intent = new android.content.Intent(this, DrugActivity.class);
+
+        } else if (id == R.id.nav_kw) {
+            android.content.Intent intent = new android.content.Intent(this, KeywordActivity.class);
+
             startActivity(intent);
         } else if (id == R.id.nav_share) {
 

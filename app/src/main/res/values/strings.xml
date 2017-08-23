@@ -8,5 +8,9 @@
     <string name="title_activity_item">ItemActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_list">ListActivity</string>
+
     <string name="title_activity_drug">DrugActivity</string>
+
+    <string name="title_activity_keyword">KeywordActivity</string>
+
 </resources>
