@@ -48,7 +48,7 @@ public class AddActivity extends AppCompatActivity implements DatePickerDialog.O
         ContentValues values = new ContentValues();
         values.put("cdate", date);
         values.put("amount",amount);
-
+        //用map不用 組inser 語法
         long id =helper.getWritableDatabase().insert("exp",null,values);
         Log.d("ADD",id+"");
 
