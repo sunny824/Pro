@@ -53,7 +53,8 @@ public class AddActivity extends AppCompatActivity implements DatePickerDialog.O
         long id =helper.getWritableDatabase().insert("exp",null,values);
         Log.d("ADD",id+"");
         //2017/09/09
-        Log.d(TAG, "add: "+id);//快速鍵 logd 加tab鍵 ,對著TAG打 option +Eenter
+        Log.d(TAG, "add: "+id);//快速鍵 logd 加tab鍵 ,對著TAG打 option +Enter
+        //快速鍵 alt command 加左方向鍵
 
     }
 
