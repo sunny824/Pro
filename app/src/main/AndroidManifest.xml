@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.sunny.pro2">
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,7 @@
             android:name=".TestActivity"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".KeywordActivity"/>
         <activity android:name=".AddActivity"/>
         <activity
             android:name=".ListActivity"
@@ -46,6 +48,18 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".Test2Activity">
+        </activity>
+        <activity
+            android:name=".AsyncActivity"
+            android:label="@string/title_activity_async"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".ExpenseActivity">
+        </activity>
+        <activity
+            android:name=".Add2Activity"
+            android:label="@string/title_activity_add2"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

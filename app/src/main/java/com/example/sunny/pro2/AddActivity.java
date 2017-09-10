@@ -18,7 +18,6 @@ import static java.util.Calendar.DATE;
 
 public class AddActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
-    private static final String TAG = "ADD";
     static MyDBHelper helper;
     private EditText editAmount;
     private EditText editDate;
@@ -49,12 +48,11 @@ public class AddActivity extends AppCompatActivity implements DatePickerDialog.O
         ContentValues values = new ContentValues();
         values.put("cdate", date);
         values.put("amount",amount);
-        //用map不用 組inser 語法
+
         long id =helper.getWritableDatabase().insert("exp",null,values);
         Log.d("ADD",id+"");
-        //2017/09/09
-        Log.d(TAG, "add: "+id);//快速鍵 logd 加tab鍵 ,對著TAG打 option +Enter
-        //快速鍵 alt command 加左方向鍵
+
+
 
     }
 

@@ -32,9 +32,12 @@
         <item
             android:id="@+id/nav_kw"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="用藥清單" />
+            android:title="關鍵字清單" />
 
-
+        <item
+            android:id="@+id/nav_as"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="耗時工作設計" />
 
 
     </group>

@@ -48,12 +48,15 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         Toast.makeText(this,"1111",Toast.LENGTH_SHORT).show();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, "FloatingActionButton click......", Toast.LENGTH_LONG).show();
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                android.content.Intent intent = new android.content.Intent(MainActivity.this, AddActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -158,13 +161,13 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_drug) {
             android.content.Intent intent = new android.content.Intent(this, DrugActivity.class);
-
+            startActivity(intent);
         } else if (id == R.id.nav_kw) {
             android.content.Intent intent = new android.content.Intent(this, KeywordActivity.class);
-
             startActivity(intent);
-        } else if (id == R.id.nav_share) {
-
+        } else if (id == R.id.nav_as) {
+            android.content.Intent intent = new android.content.Intent(this, AsyncActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_send) {
 
         }
@@ -237,7 +240,7 @@ public class MainActivity extends AppCompatActivity
                     //TextView keywordView = (TextView) view.findViewById(R.id.menuName);
 
                     //SearchView queryMainSearchView = (SearchView) ExpertKeywordMainActivity.this.findViewById(R.id.queryMainSearchView);
-                    Toast.makeText(view.getContext(), "sunnyTest這是一個Toast......"  , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), "test:"+ view.getContext() , Toast.LENGTH_SHORT).show();
                     //queryMainSearchView.setQuery(keywordView.getText(), true);
                 }
             });
@@ -247,7 +250,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onBindChildViewHolder(ChildViewHolder holder, int flatPosition, ExpandableGroup group, int childIndex) {
             final String str = (String) group.getItems().get(childIndex);
-            holder.onBind(str);
+            //Toast.makeText(this,"on Create",Toast.LENGTH_SHORT).show();
+            holder.onBind(childIndex+"."+str);
         }
 
         @Override

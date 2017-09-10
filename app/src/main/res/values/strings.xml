@@ -12,5 +12,7 @@
     <string name="title_activity_drug">DrugActivity</string>
 
     <string name="title_activity_keyword">KeywordActivity</string>
+    <string name="title_activity_async">AsyncActivity</string>
+    <string name="title_activity_add2">Add2Activity</string>
 
 </resources>

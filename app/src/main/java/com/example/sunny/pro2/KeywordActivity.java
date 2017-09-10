@@ -1,6 +1,8 @@
 package com.example.sunny.pro2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,45 +38,101 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class KeywordActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private String[] mDataset;
+    private AsyncTask progressDialogTask;
+    private RecyclerView keywordListRecycleView;
+
+    private String kwRespResult;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         try {
-            String response = new HttpTask().execute("http://m.vghtpe.gov.tw:8080/MobileWeb/expertfind.do").get();
 
-            if (response != null && response.length() > 0) {
-                JSONObject jo = new JSONObject(response);
-                JSONArray ja = jo.getJSONArray("RECORDS");
 
-                java.util.HashMap<String, ArrayList<String>> map = new java.util.HashMap<String, ArrayList<String>>();
-                for (int i = 0; i < ja.length(); i++) {
-                    if (ja != null && ja.length() > 0) {
-                        String depStr = ja.getJSONObject(i).get("DEP").toString().replaceAll("內科部", "").replaceAll("外科部", "").replaceAll("臨床毒物與職業醫學科", "臨床毒物科");
-                        String kwStr = ja.getJSONObject(i).get("KEYWORD").toString();
-                        mDataset[0]=depStr;
-                    }
+            progressDialogTask = new AsyncTask<Void, Void, ArrayList<String[]>>() {
+                android.app.ProgressDialog myDialog;
+
+                @Override
+                protected void onCancelled() {
+                    myDialog.dismiss();
+                    super.onCancelled();
+                }
+
+                @Override
+                protected void onPreExecute() {
+                    // final android.app.ProgressDialog
+                    myDialog = android.app.ProgressDialog.show(KeywordActivity.this,"", "搜尋中，請稍候....", true);
                 }
 
 
+                protected ArrayList<String[]> doInBackground(Void... params){
+                    ArrayList<String[]> myDataset = null;
+                    try{
+                        myDataset = getDocfromKeyWordByURL("http://m.vghtpe.gov.tw:8080/MobileWeb/expertfind.do?kw=" + URLEncoder.encode("骨折", "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    return myDataset;
+                }
 
-            }
+                @Override
+                protected void onProgressUpdate(Void... values) {
+                    super.onProgressUpdate(values);
+                }
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }catch (JSONException e) {
+                @Override
+                protected void onPostExecute(ArrayList<String[]> myDataset) {
+//                    if (myDataset != null && myDataset.size() > 0) {
+//                       // keywordListRecycleView.setAdapter( new ListViewAdapter(myDataset) );
+//                    }else {
+//                        new AlertDialog.Builder(KeywordActivity.this).setTitle("查無關鍵字關聯醫師").setMessage("很抱歉！查無此關鍵字關聯醫師！").setIcon(android.R.drawable.ic_dialog_alert).
+//                                setPositiveButton("確定", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialog, int which) {
+//                                        // // // dialog.dismiss();
+//                                     //   finish();
+//                                    }
+//                                }).create().show();
+//                        // // // return false;
+//                    }
+                    // // // if (isOnline()){
+                    // // // }else{
+                    // // //     new android.app.AlertDialog.Builder(ExpertKeywordMainActivity.this).setTitle("網路連線異常").setMessage("網路連線異常，請確認網路連線後重新啟動").setIcon(android.R.drawable.ic_dialog_alert).
+                    // // //             setPositiveButton("確定", new DialogInterface.OnClickListener() {
+                    // // //                 @Override
+                    // // //                 public void onClick(DialogInterface dialog, int which) {
+                    // // //                     // // // dialog.dismiss();
+                    // // //                     finish();
+                    // // //                 }
+                    // // //             }).create().show();
+                    // // // }
+                    myDialog.dismiss();
+                }
+            };
+            //循序：SERIAL_EXECUTOR，並行：THREAD_POOL_EXECUTOR
+            progressDialogTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+            // // // if (android.os.Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.HONEYCOMB)
+            // // //     progressDialogTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
+            // // // else
+            // // //     progressDialogTask.execute();
+
+
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -160,6 +218,63 @@ public class KeywordActivity extends AppCompatActivity
         }
     }
 
+    private ArrayList<String[]> getDocfromKeyWordByURL(String url){
+        ArrayList<String[]> myDataset = null;
+        try {
+            if (kwRespResult == null || kwRespResult.length() <= 0) {
+                kwRespResult = new HttpTask().execute(url).get();
+            }
+            String response = kwRespResult;
+            if (response != null && response.length() > 0) {
+                myDataset = new ArrayList<String[]>();
+
+                String docDept = "";
+                String docName = "";
+                String base64 = "";
+                String guidUrl = "";
+
+                //for (String line : response.split("\n")) {
+                try {
+                    JSONObject jo = new JSONObject(response);
+                    JSONArray ja = jo.getJSONArray("RECORDS");
+                    Pattern pattern = null;
+                    for (int i = 0; i < ja.length(); i++) {
+                        if (ja != null && ja.length() > 0) {
+                            pattern = Pattern.compile("\\s*(\\S+)$", Pattern.MULTILINE);
+                            String deptStr = ja.getJSONObject(i).get("DEPARTMENT").toString();
+                            Matcher matcher = pattern.matcher(deptStr);
+                            if (matcher.find()) {
+                                docDept = matcher.group(0);
+                            }
+
+
+                            pattern = Pattern.compile("\\s*(\\S+)", Pattern.MULTILINE);
+                            String docNameStr = ja.getJSONObject(i).get("DOCNAME").toString();
+                            matcher = pattern.matcher(docNameStr);
+                            if (matcher.find()) {
+                                docName = matcher.group(0);
+                            }
+
+                            String docNameTitle = ja.getJSONObject(i).get("TITLE").toString();
+
+                            base64 = ja.getJSONObject(i).get("IMAGEBASE64").toString();
+                            guidUrl = ja.getJSONObject(i).get("GUIDEURL").toString();
+                            myDataset.add(new String[]{deptStr, docNameStr, docNameTitle, base64, guidUrl, docName});
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return myDataset;
+    }
+
 
     public class HttpTask extends AsyncTask<String, Integer, String> {
 
@@ -210,11 +325,7 @@ public class KeywordActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(String response) {
-            // if(pDialog!=null)
-            //    pDialog.dismiss();
-            // pDialog = null;
-            //将Bitmap填充进Imageview
-            // imageView.setImageBitmap(bitmap);
+            //keywordListRecycleView.setAdapter( new SearchRecycleAdapter(myDataset) );
         }
     }
 
